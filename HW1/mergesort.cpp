@@ -6,37 +6,72 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <math.h>
 
 using namespace std;
 
 ofstream insertOutput; // Our output file.
 
 // Merge subroutine: We have two subarrays, one ranging from 0 to mid and one ranging from mid to max that are sorted. Let's merge them.
-void merge(vector <double>& doubleVec, int lowIndex, int maxIndex, int halfIndex)
+vector <double> merge(vector <double> firstSubarray, vector <double> secondSubarray)
 {
-	for (int i = 0; i < doubleVec.size(); i++)
-		cout << doubleVec.at(i);
+	vector <double> sortedVector; // Where we'll place our results.
+	int firstSubArrCount, secondSubArrCount; // We'll use the [] notation to access the proper index of the subarrays.
+	firstSubArrCount = 0; // Start at 0, begin iterating thru both subarrays.
+	secondSubArrCount = 0;
 
+	int onFirstSubArr = false; // A T/F switch we'll use: is the right element to take right now on the first subarray? If so, switch to 1. If not, switch to 0.
+	int totalSizeOfSortedArr = firstSubarray.size() + secondSubarray.size();	
+	for (int j = 0; j < totalSizeOfSortedArr; j++)
+	{
+		if (firstSubArrCount < firstSubarray.size()) // Still more left in the first subarray.
+		{
+			if (secondSubArrCount < secondSubarray.size()) // Still room in the second subarray.
+			{
+				onFirstSubArr = (firstSubarray[firstSubArrCount] < secondSubarray[secondSubArrCount]); // Is the first subarray's element less than the second? If so, set this to true and we'll grab that element and put it into our sorted vector.
+			}
 
+			else // Seond sub array has already been traversed, focus on the first subarray.
+			{
+				onFirstSubArr = true;
+			}
+		}
 
+		else
+			onFirstSubArr = false; // First subarray has already been traversed.
+		
+		if (onFirstSubArr == true) // Focus on the first subarray.
+		{
+			sortedVector.push_back(firstSubarray[firstSubArrCount]);			
+			if (firstSubArrCount < firstSubarray.size())
+				firstSubArrCount += 1; // Move further into the first subarray.
+		}
+
+		else
+		{
+			sortedVector.push_back(secondSubarray[secondSubArrCount]);
+			if (secondSubArrCount < secondSubarray.size())
+				secondSubArrCount += 1;
+		}
+	}
+
+	return sortedVector;
 }
 
-void mergeSort(vector <double>& doubleVec, int lowIndex, int maxIndex)
+vector <double> mergeSort(vector <double> doubleVec)
 {
-	int halfIndex;
+	if (doubleVec.size() <= 1) // Base case: only one element in doubleVec, and so it is by definition sorted.
+		return doubleVec;
 
-	if (lowIndex < maxIndex) // Stop when n is one (only 1 element, which by definition is sorted), this is our n = 1 base case
-	{
-		halfIndex = (lowIndex + maxIndex) / 2; // Ceiling of n/2.
-		
-		// Split vector into two halves
-		// Recursively sort each half by continuously breaking the half at hand until it is a single element (by definition sorted)
-		mergeSort(doubleVec, lowIndex, halfIndex); // Sort the lower half.
-		mergeSort(doubleVec, halfIndex + 1, maxIndex); // Sort the higher half.
-		merge(doubleVec, lowIndex, maxIndex, halfIndex); // Call our merge routine.
+	int halfIndex = ceil(doubleVec.size() / 2); // The midpoint of the overall array that separates the two subarrays is ceiling(n/2)
 
-	}
-	
+	// Set up vectors for the first subarray and second subarray using C++ vector iterators.
+	vector <double> firstSubarray(doubleVec.begin(), doubleVec.begin() + halfIndex); // Starts at 0, ends at the midway point initially.
+	vector <double> secondSubarray(doubleVec.begin() + halfIndex, doubleVec.end()); // Starts at midway point, ends at the last element.
+
+	// Pass to merge the sorted versions of both subarrays
+	// This statement will recursively call mergeSort on both subarrays until the base case of containing one element is reached.
+	return merge(mergeSort(firstSubarray), mergeSort(secondSubarray));
 }
 
 // Sort the vectors in the vector and print out the results to the output file.
@@ -48,13 +83,13 @@ void processDoubleVec(vector < vector <double> > doubleVec)
 	{
 		vector <double> doubleVec2 = doubleVec.at(i);
 
-		mergeSort(doubleVec2, 0, doubleVec2.size() - 1);
+		vector <double> sortedVector = mergeSort(doubleVec2);
 
-		for (int j = 0; j < doubleVec2.size(); j++)
+		for (int j = 0; j < sortedVector.size(); j++)
 		{
-			insertOutput << doubleVec2.at(j);
+			insertOutput << sortedVector.at(j);
 
-			if (j != doubleVec2.size() -1)
+			if (j != sortedVector.size() -1)
 			{
 				insertOutput << " ";
 			}
@@ -108,6 +143,6 @@ int main()
 	inputFile.close();
 
 	processDoubleVec(doubleVec);
-
+	
 	return 0;
 }
