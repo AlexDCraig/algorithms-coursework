@@ -124,16 +124,23 @@ int main()
 
 		vector <double> doubleVec2; 
 		
+		int counter = 0;
+
 		while (1)
 		{
 			double n;
 			stream >> n; // Cast into double.
 	
 			if (stream)
-				doubleVec2.push_back(n);
+			{
+				if (counter != 0)
+					doubleVec2.push_back(n);
+			}
 
 			else if (!stream) // No more string to parse, break the infinite loop.
-				break;		
+				break;	
+
+			counter++;	
 		}
 
 		doubleVec.push_back(doubleVec2);

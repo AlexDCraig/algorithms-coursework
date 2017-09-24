@@ -89,16 +89,20 @@ int main()
 
 		vector <double> doubleVec2; 
 		
+		int counter = 0;
+
 		while (1)
-		{
+		{	
 			double n;
 			stream >> n; // Cast into double.
 	
-			if (stream)
+			if (stream && counter != 0) // We don't need the first umber for size reference since we're using vectors, so ignore it.
 				doubleVec2.push_back(n);
 
 			else if (!stream) // No more string to parse, break the infinite loop.
 				break;		
+
+			counter++;
 		}
 
 		doubleVec.push_back(doubleVec2);
