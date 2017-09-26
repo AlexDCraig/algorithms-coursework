@@ -166,3 +166,57 @@ Number of vectors sorted: 20
 Total runtime: 39.02 seconds 
 **END**
 
+**BEGIN**
+Size of each vector: 11000
+Number of vectors sorted: 20
+Total runtime: 46.73 seconds 
+**END**
+
+**BEGIN**
+Size of each vector: 11000
+Number of vectors sorted: 20
+Total runtime: 47.47 seconds 
+**END**
+
+**BEGIN**
+Size of each vector: 11000
+Number of vectors sorted: 20
+Total runtime: 47.07 seconds 
+**END**
+
+**BEGIN**
+Size of each vector: 12000
+Number of vectors sorted: 20
+Total runtime: 56.03 seconds 
+**END**
+
+**BEGIN**
+Size of each vector: 12000
+Number of vectors sorted: 20
+Total runtime: 55.62 seconds 
+**END**
+
+**BEGIN**
+Size of each vector: 12000
+Number of vectors sorted: 20
+Total runtime: 55.61 seconds 
+**END**
+
+**BEGIN**
+Size of each vector: 13000
+Number of vectors sorted: 20
+Total runtime: 65.37 seconds 
+**END**
+
+**BEGIN**
+Size of each vector: 13000
+Number of vectors sorted: 20
+Total runtime: 65.66 seconds 
+**END**
+
+**BEGIN**
+Size of each vector: 13000
+Number of vectors sorted: 20
+Total runtime: 65.4 seconds 
+**END**
+
