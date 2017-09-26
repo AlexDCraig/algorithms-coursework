@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 using namespace std;
 
@@ -82,18 +83,36 @@ vector <int> mergeSort(vector <int> intVec)
 }
 
 // Generate random vectors.
-void getIntVecs(vector < vector <int> >& intVec, int sizeOfEachVector, int sizeOfOverallVector)
+void getIntVecs(vector < vector <int> >& intVec, int sizeOfEachVector, int sizeOfOverallVector, char* caseType)
 {
 	int intRange = 10001; // We want values from [0, 10000]
+
+	bool isBest = true;
+
+	if (strcmp(caseType, "best") == 0)
+		isBest = true;
+
+	else
+		isBest = false;
 
 	for (int i = 0; i < sizeOfOverallVector; i++)
 	{
 		vector <int> tempVec;
+		int bestCaseNum = 0; // If we want best case, we'll just do increasing order.
 
 		for (int j = 0; j < sizeOfEachVector; j++)
 		{
-			int randInt = rand() % intRange;
-			tempVec.push_back(randInt);
+			if (isBest == true)
+			{
+				tempVec.push_back(bestCaseNum);
+				bestCaseNum++;
+			}
+
+			else
+			{
+				int randInt = rand() % intRange;
+				tempVec.push_back(randInt);
+			}
 		}	
 
 		intVec.push_back(tempVec);
@@ -115,29 +134,30 @@ int main(int argc, char* argv[])
 	clock_t t;
 	t = clock();
 
-	if (argc != 2)
+	if (argc != 3)
 	{
-		cout << "usage: " << argv[0] << " sizeOfEachVector" << endl;
+		cout << "usage: " << argv[0] << " [sizeOfEachVector in int] [best | worst depending on what case you want] " << endl;
 		exit(1);
 	}
 
 	int sizeOfEachVector = atoi(argv[1]); // Our n. How big will each vector be?
-	int numVectorsToSort = 20; // How many vectors of random ints should we make?
+	int numVectorsToSort = 1000; // How many vectors of random ints should we make?
+	char* caseType = argv[2];
 
 	srand(time(NULL));
 
 	vector < vector <int> > intVec;		
 
-	insertOutput.open("mergeTest.out", fstream::in | fstream::out | fstream::app);
+	insertOutput.open("mergeTestEC.out", fstream::in | fstream::out | fstream::app);
 
-	getIntVecs(intVec, sizeOfEachVector, numVectorsToSort);
+	getIntVecs(intVec, sizeOfEachVector, numVectorsToSort, caseType);
 
 	processIntVec(intVec);
 
 	insertOutput << "**BEGIN**" << endl;
 	insertOutput << "Size of each vector: " << sizeOfEachVector << endl;
 	insertOutput << "Number of vectors sorted: " << numVectorsToSort << endl;
-	
+	insertOutput << "Best case or worst case: " << caseType << endl;
 	t = clock() - t;
 	float convertedTime = ((float)t)/(CLOCKS_PER_SEC);
 	insertOutput << "Total runtime: " << convertedTime << " seconds " << endl;
