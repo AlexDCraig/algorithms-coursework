@@ -43,12 +43,8 @@ void insertionSort(vector <int>& intVec)
 }
 
 // Generate random vectors.
-void getIntVecs(vector < vector <int> >& intVec)
+void getIntVecs(vector < vector <int> >& intVec, int sizeOfEachVector, int sizeOfOverallVector)
 {
-	int sizeOfOverallVector = 300; // How big the vector holding the vectors will be.
-
-	int sizeOfEachVector = 1000; // How big each vector will be.
-	
 	int intRange = 10001; // We want values from [0, 10000]
 
 	for (int i = 0; i < sizeOfOverallVector; i++)
@@ -76,17 +72,39 @@ void processIntVec(vector < vector <int> > intVec)
 	}
 }
 
-int main()
+int main(int argc, char* argv[])
 {
+	clock_t t;
+	t = clock();
+
+	if (argc != 2)
+	{
+		cout << "usage: " << argv[0] << " sizeOfEachVector" << endl;
+		exit(1);
+	}
+
+	int sizeOfEachVector = atoi(argv[1]); // Our n. How big will each vector be?
+	int numVectorsToSort = 20; // How many vectors of random ints should we make?
+
 	srand(time(NULL));
 
 	vector < vector <int> > intVec;		
 
 	insertOutput.open("insertTest.out", fstream::in | fstream::out | fstream::app);
 
-	getIntVecs(intVec);
+	getIntVecs(intVec, sizeOfEachVector, numVectorsToSort);
 
 	processIntVec(intVec);
+
+	insertOutput << "**BEGIN**" << endl;
+	insertOutput << "Size of each vector: " << sizeOfEachVector << endl;
+	insertOutput << "Number of vectors sorted: " << numVectorsToSort << endl;
+	
+	t = clock() - t;
+	float convertedTime = ((float)t)/(CLOCKS_PER_SEC);
+	insertOutput << "Total runtime: " << convertedTime << " seconds " << endl;
+
+	insertOutput << "**END**" << endl << endl;
 
 	insertOutput.close();
 
