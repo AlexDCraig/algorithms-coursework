@@ -1,4 +1,4 @@
-/* Alex Hoffer: Parse a text file line by line and sort each line using insertion sort. Print the results to a file named "insert.out". */
+/* Alex Hoffer: Analysis of merge sort algo. */
 
 #include <iostream>
 #include <fstream>
@@ -6,6 +6,9 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 
 using namespace std;
@@ -13,9 +16,9 @@ using namespace std;
 ofstream insertOutput; // Our output file.
 
 // Merge subroutine: We have two subarrays, one ranging from 0 to mid and one ranging from mid to max that are sorted. Let's merge them.
-vector <double> merge(vector <double> firstSubarray, vector <double> secondSubarray)
+vector <int> merge(vector <int> firstSubarray, vector <int> secondSubarray)
 {
-	vector <double> sortedVector; // Where we'll place our results.
+	vector <int> sortedVector; // Where we'll place our results.
 	int firstSubArrCount, secondSubArrCount; // We'll use the [] notation to access the proper index of the subarrays.
 	firstSubArrCount = 0; // Start at 0, begin iterating thru both subarrays.
 	secondSubArrCount = 0;
@@ -58,98 +61,86 @@ vector <double> merge(vector <double> firstSubarray, vector <double> secondSubar
 	return sortedVector;
 }
 
-vector <double> mergeSort(vector <double> doubleVec)
+vector <int> mergeSort(vector <int> intVec)
 {
-	if (doubleVec.size() <= 1) // Base case: only one element in doubleVec, and so it is by definition sorted.
-		return doubleVec;
+	if (intVec.size() <= 1) // Base case: only one element in doubleVec, and so it is by definition sorted.
+		return intVec;
 
-	int halfIndex = ceil(doubleVec.size() / 2); // The midpoint of the overall array that separates the two subarrays is ceiling(n/2)
+	int halfIndex = ceil(intVec.size() / 2); // The midpoint of the overall array that separates the two subarrays is ceiling(n/2)
 
 	// Set up vectors for the first subarray and second subarray using C++ vector iterators.
-	vector <double> firstSubarray(doubleVec.begin(), doubleVec.begin() + halfIndex); // Starts at 0, ends at the midway point initially.
-	vector <double> secondSubarray(doubleVec.begin() + halfIndex, doubleVec.end()); // Starts at midway point, ends at the last element.
+	vector <int> firstSubarray(intVec.begin(), intVec.begin() + halfIndex); // Starts at 0, ends at the midway point initially.
+	vector <int> secondSubarray(intVec.begin() + halfIndex, intVec.end()); // Starts at midway point, ends at the last element.
 
 	// Pass to merge the sorted versions of both subarrays
 	// This statement will recursively call mergeSort on both subarrays until the base case of containing one element is reached.
 	return merge(mergeSort(firstSubarray), mergeSort(secondSubarray));
 }
 
-// Sort the vectors in the vector and print out the results to the output file.
-void processDoubleVec(vector < vector <double> > doubleVec)
+// Generate random vectors.
+void getIntVecs(vector < vector <int> >& intVec, int sizeOfEachVector, int sizeOfOverallVector)
 {
-	insertOutput.open("mergeTest.out");
+	int intRange = 10001; // We want values from [0, 10000]
 
-	for (int i = 0; i < doubleVec.size(); i++)
+	for (int i = 0; i < sizeOfOverallVector; i++)
 	{
-		vector <double> doubleVec2 = doubleVec.at(i);
+		vector <int> tempVec;
 
-		vector <double> sortedVector = mergeSort(doubleVec2);
-
-		for (int j = 0; j < sortedVector.size(); j++)
+		for (int j = 0; j < sizeOfEachVector; j++)
 		{
-			insertOutput << sortedVector.at(j);
+			int randInt = rand() % intRange;
+			tempVec.push_back(randInt);
+		}	
 
-			if (j != sortedVector.size() -1)
-			{
-				insertOutput << " ";
-			}
-		}
-
-		insertOutput << "\n";
+		intVec.push_back(tempVec);
 	}
+}
+
+// Sort the vectors in the vector and print out the results to the output file.
+void processIntVec(vector < vector <int> > intVec)
+{
+	for (int i = 0; i < intVec.size(); i++)
+	{
+		vector <int> intVec2 = intVec.at(i);
+		mergeSort(intVec2);
+	}
+}
+
+int main(int argc, char* argv[])
+{
+	clock_t t;
+	t = clock();
+
+	if (argc != 2)
+	{
+		cout << "usage: " << argv[0] << " sizeOfEachVector" << endl;
+		exit(1);
+	}
+
+	int sizeOfEachVector = atoi(argv[1]); // Our n. How big will each vector be?
+	int numVectorsToSort = 20; // How many vectors of random ints should we make?
+
+	srand(time(NULL));
+
+	vector < vector <int> > intVec;		
+
+	insertOutput.open("mergeTest.out", fstream::in | fstream::out | fstream::app);
+
+	getIntVecs(intVec, sizeOfEachVector, numVectorsToSort);
+
+	processIntVec(intVec);
+
+	insertOutput << "**BEGIN**" << endl;
+	insertOutput << "Size of each vector: " << sizeOfEachVector << endl;
+	insertOutput << "Number of vectors sorted: " << numVectorsToSort << endl;
+	
+	t = clock() - t;
+	float convertedTime = ((float)t)/(CLOCKS_PER_SEC);
+	insertOutput << "Total runtime: " << convertedTime << " seconds " << endl;
+
+	insertOutput << "**END**" << endl << endl;
 
 	insertOutput.close();
 
-}
-
-int main()
-{
-	ifstream inputFile;
-	inputFile.open("data.txt");
-	vector < vector <double> > doubleVec;		
-	string line;
-
-	if (!inputFile)
-	{
-		cout << "Error opening file." << endl;
-		return 1;
-	}
-
-	// Load data.txt line by line.
-	// doubleVec is a vector that holds vectors of doubles that correspond to the file's lines.
-	while (getline(inputFile, line))
-	{
-		// Parse the string.
-		stringstream stream(line);
-
-		vector <double> doubleVec2; 
-		
-		int counter = 0;
-
-		while (1)
-		{
-			double n;
-			stream >> n; // Cast into double.
-	
-			if (stream)
-			{
-				if (counter != 0)
-					doubleVec2.push_back(n);
-			}
-
-			else if (!stream) // No more string to parse, break the infinite loop.
-				break;	
-
-			counter++;	
-		}
-
-		doubleVec.push_back(doubleVec2);
-
-	}
-
-	inputFile.close();
-
-	processDoubleVec(doubleVec);
-	
 	return 0;
 }
