@@ -1,0 +1,77 @@
+**BEGIN**
+Size of each vector: 1000
+Number of vectors sorted: 1000
+Best case or worst case: best
+Total runtime: 0.09 seconds 
+**END**
+
+**BEGIN**
+Size of each vector: 2000
+Number of vectors sorted: 1000
+Best case or worst case: best
+Total runtime: 0.18 seconds 
+**END**
+
+**BEGIN**
+Size of each vector: 5000
+Number of vectors sorted: 1000
+Best case or worst case: best
+Total runtime: 0.46 seconds 
+**END**
+
+**BEGIN**
+Size of each vector: 7000
+Number of vectors sorted: 1000
+Best case or worst case: best
+Total runtime: 0.65 seconds 
+**END**
+
+**BEGIN**
+Size of each vector: 10000
+Number of vectors sorted: 1000
+Best case or worst case: best
+Total runtime: 0.91 seconds 
+**END**
+
+**BEGIN**
+Size of each vector: 11000
+Number of vectors sorted: 1000
+Best case or worst case: best
+Total runtime: 0.85 seconds 
+**END**
+
+**BEGIN**
+Size of each vector: 12000
+Number of vectors sorted: 1000
+Best case or worst case: best
+Total runtime: 0.64 seconds 
+**END**
+
+**BEGIN**
+Size of each vector: 13000
+Number of vectors sorted: 1000
+Best case or worst case: best
+Total runtime: 0.77 seconds 
+**END**
+
+**BEGIN**
+Size of each vector: 1000
+Number of vectors sorted: 1000
+Best case or worst case: worst
+Total runtime: 39.3 seconds 
+**END**
+
+**BEGIN**
+Size of each vector: 2000
+Number of vectors sorted: 1000
+Best case or worst case: worst
+Total runtime: 155.08 seconds 
+**END**
+
+**BEGIN**
+Size of each vector: 5000
+Number of vectors sorted: 1000
+Best case or worst case: worst
+Total runtime: 967.59 seconds 
+**END**
+
