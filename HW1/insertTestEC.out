@@ -75,3 +75,10 @@ Best case or worst case: worst
 Total runtime: 967.59 seconds 
 **END**
 
+**BEGIN**
+Size of each vector: 7000
+Number of vectors sorted: 1000
+Best case or worst case: worst
+Total runtime: 1895.43 seconds 
+**END**
+
