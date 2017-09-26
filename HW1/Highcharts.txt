@@ -1,0 +1,8 @@
+http://jsfiddle.net/mnzzum52/2/
+^ Link to line graph of insertion sort.
+
+http://jsfiddle.net/mnzzum52/1/
+^ Link to line graph of mergesort.
+
+http://jsfiddle.net/mnzzum52/3/
+^ Link of both.

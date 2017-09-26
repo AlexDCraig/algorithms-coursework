@@ -220,3 +220,15 @@ Number of vectors sorted: 20
 Total runtime: 0.67 seconds 
 **END**
 
+**BEGIN**
+Size of each vector: 7000
+Number of vectors sorted: 20
+Total runtime: 0.67 seconds 
+**END**
+
+**BEGIN**
+Size of each vector: 7000
+Number of vectors sorted: 20
+Total runtime: 0.35 seconds 
+**END**
+

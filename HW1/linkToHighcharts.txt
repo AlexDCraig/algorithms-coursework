@@ -1,2 +1,0 @@
-http://jsfiddle.net/mt1689dg/ 
-^ Link to line graph of insertion sort.
