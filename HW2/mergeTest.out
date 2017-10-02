@@ -1,0 +1,42 @@
+**BEGIN**
+Size of each vector: 1000
+Number of vectors sorted: 20
+Total runtime: 0.04 seconds 
+**END**
+
+**BEGIN**
+Size of each vector: 2000
+Number of vectors sorted: 20
+Total runtime: 0.09 seconds 
+**END**
+
+**BEGIN**
+Size of each vector: 3000
+Number of vectors sorted: 20
+Total runtime: 0.15 seconds 
+**END**
+
+**BEGIN**
+Size of each vector: 4000
+Number of vectors sorted: 20
+Total runtime: 0.26 seconds 
+**END**
+
+**BEGIN**
+Size of each vector: 5000
+Number of vectors sorted: 20
+Total runtime: 0.42 seconds 
+**END**
+
+**BEGIN**
+Size of each vector: 6000
+Number of vectors sorted: 20
+Total runtime: 0.3 seconds 
+**END**
+
+**BEGIN**
+Size of each vector: 7000
+Number of vectors sorted: 20
+Total runtime: 0.35 seconds 
+**END**
+

@@ -14,33 +14,31 @@ using namespace std;
 
 ofstream insertOutput; // Our output file.
 
-/* Alex's stoogesort: Given vector A, sort A[0...n-1] by
- * recursively sorting first two thirds, then second two thirds,
- * and then the first two thirds again by using the base case
- * of n = 2 and the lower index contains a higher value than
- * the higher index
- * Recurrence: T(n) = 3 * T(3n/2) + 1
- * Reasoning: 3 subproblems, each subproblem is of 3n/2 cost, with 1 indicating constant time operations
+/* An in-place sorting algorithm that follows the following procedure:
+ * 	Given array A of length n:
+ * 		- Let j = 0. 
+ * 		- While j <= n
+ * 			- Let key = A[j]
+ * 			- Let i = j - 1
+ * 			- While i > 0 and A[i] > key
+ * 				- Let A[i + 1] = A[i]
+ * 				- Decrement i
+ * 			- Increment j
+ * 			- Let A[i + 1] = key 
  */
-void stoogeSort(vector <int>& vec, int low, int high)
+void insertionSort(vector <int>& intVec)
 {
-	// Base case: n = 2, low element has higher value so swap
-	if (vec.at(low) > vec.at(high))
+	for (int i = 0; i < intVec.size(); i++) // Starting at second index, loop through the vector and compare the currently selected index to the indices before it.
 	{
-		int temp = vec.at(low);
-		vec.at(low) = vec.at(high);
-		vec.at(high) = temp;
-	}
+		int j = i;
 
-	// Recursive cases, n > 2
-	if (high - low + 1 > 2)
-	{
-		int twoThirds = (high - low + 1) / 3; // ceiling(2n/3)
-		
-		// Recursive cases
-		stoogeSort(vec, low, high - twoThirds); // sort first two thirds
-		stoogeSort(vec, low + twoThirds, high); // sort second two thirds
-		stoogeSort(vec, low, high - twoThirds); // sort first two thirds again
+		while (j > 0 && (intVec.at(j) < intVec.at(j - 1)))
+		{
+			int swapper = intVec.at(j);
+			intVec.at(j) = intVec.at(j - 1);
+			intVec.at(j - 1) = swapper;
+			j -= 1;
+		}
 	}
 }
 
@@ -70,7 +68,7 @@ void processIntVec(vector < vector <int> > intVec)
 	{
 		vector <int> intVec2 = intVec.at(i);
 
-		stoogeSort(intVec2, 0, intVec2.size() - 1);
+		insertionSort(intVec2);
 	}
 }
 
@@ -92,7 +90,7 @@ int main(int argc, char* argv[])
 
 	vector < vector <int> > intVec;		
 
-	insertOutput.open("stoogeTest.out", fstream::in | fstream::out | fstream::app);
+	insertOutput.open("insertTest.out", fstream::in | fstream::out | fstream::app);
 
 	getIntVecs(intVec, sizeOfEachVector, numVectorsToSort);
 
