@@ -19,12 +19,12 @@ ofstream insertOutput; // Our output file.
  * Recurrence: T(n) = 3 * T(3n/2) + 1
  * Reasoning: 3 subproblems, each subproblem is of 3n/2 cost, with 1 indicating constant time operations
  */
-void stoogeSort(vector <double>& vec, int low, int high)
+void stoogeSort(vector <int>& vec, int low, int high)
 {
 	// Base case: n = 2, low element has higher value so swap
 	if (vec.at(low) > vec.at(high))
 	{
-		double temp = vec.at(low);
+		int temp = vec.at(low);
 		vec.at(low) = vec.at(high);
 		vec.at(high) = temp;
 	}
@@ -42,13 +42,13 @@ void stoogeSort(vector <double>& vec, int low, int high)
 }
 
 // Sort the vectors in the vector and print out the results to the output file.
-void processDoubleVec(vector < vector <double> > doubleVec)
+void processDoubleVec(vector < vector <int> > doubleVec)
 {
 	insertOutput.open("stooge.out");
 
 	for (int i = 0; i < doubleVec.size(); i++)
 	{
-		vector <double> doubleVec2 = doubleVec.at(i);
+		vector <int> doubleVec2 = doubleVec.at(i);
 
 		stoogeSort(doubleVec2, 0, doubleVec2.size() - 1);
 
@@ -73,7 +73,7 @@ int main()
 {
 	ifstream inputFile;
 	inputFile.open("data.txt");
-	vector < vector <double> > doubleVec;		
+	vector < vector <int> > doubleVec;		
 	string line;
 
 	if (!inputFile)
@@ -89,13 +89,13 @@ int main()
 		// Parse the string.
 		stringstream stream(line);
 
-		vector <double> doubleVec2; 
+		vector <int> doubleVec2; 
 		
 		int counter = 0;
 
 		while (1)
 		{	
-			double n;
+			int n;
 			stream >> n; // Cast into double.
 	
 			if (stream && counter != 0) // We don't need the first umber for size reference since we're using vectors, so ignore it.
