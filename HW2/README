@@ -1,0 +1,4 @@
+Compiling Alex's stoogesort:
+1) g++ stooge.cpp -o stooge
+2) ./stooge
+** MUST HAVE VALID "data.txt" file in the directory **
