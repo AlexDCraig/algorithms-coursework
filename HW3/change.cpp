@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <algorithm>
 
 using namespace std;
 
@@ -42,16 +43,37 @@ void processDoubleVec(vector < vector <int> > doubleVec)
 }
 */
 
+int changeMaker(vector <int> coins, int amount)
+{
+	vector <int> change(amount + 1);
+	change.at(0) = 0;
+
+	for (int i = 1; i <= amount; i++)
+	{
+		int min = 100000000;
+
+		for (int j = 0; j < coins.size(); j++)
+		{
+			if (i >= coins.at(j) && (change.at(i - coins.at(j)) + 1) < min)
+			min = change.at(i - coins.at(j)) + 1;
+		}
+
+		change.at(i) = min;
+	}
+
+	return change.at(amount);
+}
+
 void processVectors(vector < vector <int> > denominations, vector <int> amounts)
 {
+	vector < vector <int> > changeResults;
+	vector <int> minNumCoinsNeeded;
+
 	outputFile.open("change.txt");
-
-
-	outputFile << "Hi";
-
-
-
 	
+	int currentChangeResult = changeMaker(denominations.at(0), amounts.at(0));
+	cout << currentChangeResult;
+
 	outputFile.close();
 }
 
