@@ -44,33 +44,57 @@ void processDoubleVec(vector < vector <int> > doubleVec)
 }
 */
 
-void printCoinCombination(int coinsUsed[], int coinsUsedSize, vector <int> coins)
+void adjustChangeResult(vector <int>& changeResult, vector <int> coins)
 {
-	int start = coinsUsedSize - 1;
-	cout << "Coins used to form total: " << endl;
-	
-	while (start != 0)
+	vector <int> adjusted;
+
+	for (int i = 0; i < changeResult.size(); i++)
+		adjusted.push_back(0);
+
+	for (int i = 0; i < coins.size(); i++)
 	{
-		int j = coinsUsed[start];
-		cout << coins.at(j) << " ";
-		start = start - coins.at(j);
-	}
+		int curValue = coins.at(i);
 	
-	cout << "\n";
+		for (int j = 0; j < changeResult.size(); j++)
+		{
+			if (changeResult.at(j) == curValue)
+				adjusted.at(i) += 1;
+		}
+	}
+
+	changeResult = adjusted;
 }
 
-int changeMaker(vector <int> coins, int amount)
+// Find the vector of coins that were used
+void findCoinsUsed(vector <int> coinsUsed, vector <int> coins, vector <int>& changeResult)
+{
+	int start = coinsUsed.size() - 1;
+
+	while (start != 0)
+	{
+		int j = coinsUsed.at(start);
+		changeResult.push_back(coins.at(j));
+		start = start - coins.at(j);
+	}
+
+	reverse(changeResult.begin(), changeResult.end());
+
+	adjustChangeResult(changeResult, coins);
+}
+
+// Returns minimum number of coins
+int changeMaker(vector <int> coins, int amount, vector <int>& changeResult)
 {
 	int hugeValue = 100000000;
-	int change[amount + 1];
-	int coinsUsed[amount + 1];
+	vector <int> change(amount + 1);
+	vector <int> coinsUsed(amount + 1);
 
-	change[0] = 0;
+	change.at(0) = 0;
 
 	for (int i = 1; i <= amount; i++)
 	{
-		change[i] = hugeValue;
-		coinsUsed[i] = -1;
+		change.at(i) = hugeValue;
+		coinsUsed.at(i) = -1;
 	}
 
 	for (int j = 0; j < coins.size(); j++)
@@ -79,18 +103,18 @@ int changeMaker(vector <int> coins, int amount)
 		{
 			if (i >= coins.at(j))
 			{
-				if (change[i - coins.at(j)] + 1 < change[i])
+				if (change.at(i - coins.at(j)) + 1 < change.at(i))
 				{
-					change[i] = 1 + change[i - coins.at(j)];
-					coinsUsed[i] = j;
+					change.at(i) = 1 + change.at(i - coins.at(j));
+					coinsUsed.at(i) = j;
 				}
 			}
 		}
 	}
 
-	printCoinCombination(coinsUsed, amount + 1, coins);
+	findCoinsUsed(coinsUsed, coins, changeResult);
 
-	return change[amount];
+	return change.at(amount);
 }
 
 void processVectors(vector < vector <int> > denominations, vector <int> amounts)
@@ -100,9 +124,34 @@ void processVectors(vector < vector <int> > denominations, vector <int> amounts)
 
 	outputFile.open("change.txt");
 	
-	int cur = changeMaker(denominations.at(0), amounts.at(0));
-//	cout << currentChangeResult;
-	cout << cur;
+	vector <int> changeResult;
+	minNumCoinsNeeded.push_back(changeMaker(denominations.at(1), amounts.at(1), changeResult));
+	changeResults.push_back(changeResult);
+
+	vector <int> tmp;
+
+	// Give denomination values to output file.
+	tmp = denominations.at(1);
+
+	for (int i = 0; i < tmp.size(); i++)
+		outputFile << tmp.at(i) << " ";
+
+	outputFile << endl;
+
+	// Give the amount to output file.
+	outputFile << amounts.at(1) << endl;
+
+	// Give the change result array to the output file.
+	tmp = changeResults.at(0); 
+
+	for (int i = 0; i < tmp.size(); i++)
+		outputFile << tmp.at(i) << " ";
+
+	outputFile << endl;
+
+	// Give the min number of coins used to the output file.
+	outputFile << minNumCoinsNeeded.at(0) << endl;
+
 	outputFile.close();
 }
 
