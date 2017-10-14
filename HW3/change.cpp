@@ -38,30 +38,59 @@ void processDoubleVec(vector < vector <int> > doubleVec)
 		outputFile << "\n";
 	}
 
+
 	outputFile.close();
 
 }
 */
 
+void printCoinCombination(int coinsUsed[], int coinsUsedSize, vector <int> coins)
+{
+	int start = coinsUsedSize - 1;
+	cout << "Coins used to form total: " << endl;
+	
+	while (start != 0)
+	{
+		int j = coinsUsed[start];
+		cout << coins.at(j) << " ";
+		start = start - coins.at(j);
+	}
+	
+	cout << "\n";
+}
+
 int changeMaker(vector <int> coins, int amount)
 {
-	vector <int> change(amount + 1);
-	change.at(0) = 0;
+	int hugeValue = 100000000;
+	int change[amount + 1];
+	int coinsUsed[amount + 1];
+
+	change[0] = 0;
 
 	for (int i = 1; i <= amount; i++)
 	{
-		int min = 100000000;
-
-		for (int j = 0; j < coins.size(); j++)
-		{
-			if (i >= coins.at(j) && (change.at(i - coins.at(j)) + 1) < min)
-			min = change.at(i - coins.at(j)) + 1;
-		}
-
-		change.at(i) = min;
+		change[i] = hugeValue;
+		coinsUsed[i] = -1;
 	}
 
-	return change.at(amount);
+	for (int j = 0; j < coins.size(); j++)
+	{
+		for (int i = 1; i <= amount; i++)
+		{
+			if (i >= coins.at(j))
+			{
+				if (change[i - coins.at(j)] + 1 < change[i])
+				{
+					change[i] = 1 + change[i - coins.at(j)];
+					coinsUsed[i] = j;
+				}
+			}
+		}
+	}
+
+	printCoinCombination(coinsUsed, amount + 1, coins);
+
+	return change[amount];
 }
 
 void processVectors(vector < vector <int> > denominations, vector <int> amounts)
@@ -71,9 +100,9 @@ void processVectors(vector < vector <int> > denominations, vector <int> amounts)
 
 	outputFile.open("change.txt");
 	
-	int currentChangeResult = changeMaker(denominations.at(0), amounts.at(0));
-	cout << currentChangeResult;
-
+	int cur = changeMaker(denominations.at(0), amounts.at(0));
+//	cout << currentChangeResult;
+	cout << cur;
 	outputFile.close();
 }
 
