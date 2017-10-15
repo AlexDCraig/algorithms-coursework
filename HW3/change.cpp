@@ -42,7 +42,7 @@ void adjustChangeResult(vector <int>& changeResult, vector <int> coins)
 }
 
 // Find the vector of coins that were combined to reach our solution
-void findCoinsUsed(vector <int> coinsUsed, vector <int> coins, vector <int>& changeResult)
+bool findCoinsUsed(vector <int> coinsUsed, vector <int> coins, vector <int>& changeResult)
 {
 	// Start from the end...
 	int start = coinsUsed.size() - 1;
@@ -50,7 +50,7 @@ void findCoinsUsed(vector <int> coinsUsed, vector <int> coins, vector <int>& cha
 	if (coinsUsed.at(coinsUsed.size() - 1) == -1)
 	{
 		cout << "Entered a problem without a solution." << endl;
-		exit(1);
+		return false;
 	}
 
 	while (start != 0)
@@ -66,6 +66,8 @@ void findCoinsUsed(vector <int> coinsUsed, vector <int> coins, vector <int>& cha
 
 	// Get it in the right form.
 	adjustChangeResult(changeResult, coins);
+
+	return true;
 }
 
 // Returns minimum number of coins
@@ -101,13 +103,18 @@ int changeMaker(vector <int> coins, int amount, vector <int>& changeResult)
 	}
 
 	// Map coin indices to actual coins.
-	findCoinsUsed(coinsUsed, coins, changeResult);
+	bool success = findCoinsUsed(coinsUsed, coins, changeResult);
 
+	if (success == false)
+		outputFile << "Problem without solution given." << endl;
+	
 	return change.at(amount);
 }
 
 void processVectors(vector < vector <int> > denominations, vector <int> amounts)
 {
+	outputFile.open("change.txt");
+
 	vector < vector <int> > changeResults;
 	vector <int> minNumCoinsNeeded;
 
@@ -118,8 +125,6 @@ void processVectors(vector < vector <int> > denominations, vector <int> amounts)
 		minNumCoinsNeeded.push_back(changeMaker(denominations.at(i), amounts.at(i), changeResult));
 		changeResults.push_back(changeResult);
 	}
-
-	outputFile.open("change.txt");
 	
 	// The output file will match the denominations and amounts but add two lines for each one.
 	int maxLines = 2 * (denominations.size() + amounts.size());

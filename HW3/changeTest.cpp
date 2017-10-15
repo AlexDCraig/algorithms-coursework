@@ -43,15 +43,14 @@ void adjustChangeResult(vector <int>& changeResult, vector <int> coins)
 }
 
 // Find the vector of coins that were combined to reach our solution
-void findCoinsUsed(vector <int> coinsUsed, vector <int> coins, vector <int>& changeResult)
+bool findCoinsUsed(vector <int> coinsUsed, vector <int> coins, vector <int>& changeResult)
 {
 	// Start from the end...
 	int start = coinsUsed.size() - 1;
 
 	if (coinsUsed.at(coinsUsed.size() - 1) == -1)
 	{
-		cout << "No solutions possible." << endl;
-		exit(1);
+		return false;
 	}
 
 	while (start != 0)
@@ -67,6 +66,8 @@ void findCoinsUsed(vector <int> coinsUsed, vector <int> coins, vector <int>& cha
 
 	// Get it in the right form.
 	adjustChangeResult(changeResult, coins);
+
+	return true;
 }
 
 // Returns minimum number of coins
@@ -102,7 +103,10 @@ int changeMaker(vector <int> coins, int amount, vector <int>& changeResult)
 	}
 
 	// Map coin indices to actual coins.
-	findCoinsUsed(coinsUsed, coins, changeResult);
+	bool success = findCoinsUsed(coinsUsed, coins, changeResult);
+
+	if (success == false)
+		outputFile << "Problem without solution provided." << endl;
 
 	return change.at(amount);
 }
@@ -120,8 +124,7 @@ void processVectors(vector < vector <int> > denominations, vector <int> amounts)
 		changeResults.push_back(changeResult);
 	}
 
-	outputFile.open("test.txt");
-	
+/*	
 	// The output file will match the denominations and amounts but add two lines for each one.
 	int maxLines = 2 * (denominations.size() + amounts.size());
 
@@ -181,27 +184,37 @@ void processVectors(vector < vector <int> > denominations, vector <int> amounts)
 		if (printCounter == 4)
 			printCounter = 0;
 	}
+*/
+
+	outputFile << "# of amounts and vectors = " << amounts.size() << endl;
 
 }
 
 void generateAmounts(vector <int>& amounts)
 {
-	for (int i = 0; i < 1; i++)
+	int amount = 16000;
+
+	outputFile << "Amount to make change for: " << amount << endl;
+
+	for (int i = 0; i < 100; i++)
 	{
-		int amount = rand() % 20 + 1; // [1, 19]	
 		amounts.push_back(amount);
 	}
 }
 
 void generateDenominations(vector < vector <int> >& denominations, vector <int> amounts)
 {
-	for (int i = 0; i < 1; i++)
+	int valueCount = 8000;
+
+	outputFile << "# of values in each denomination set: " << valueCount << endl;
+
+	for (int i = 0; i < 100; i++)
 	{
 		vector <int> denomination;
 
-		int valueCount = rand() % 5;
+		denomination.push_back(1);
 
-		for (int j = 0; j < valueCount; j++)
+		for (int j = 0; j < valueCount - 1; j++)
 		{
 			int coin = rand() % amounts.at(i) + 1;
 			denomination.push_back(coin);
@@ -214,6 +227,8 @@ void generateDenominations(vector < vector <int> >& denominations, vector <int> 
 int main()
 {
 	srand(time(NULL));
+
+	outputFile.open("test.txt");
 
 	clock_t time;	
 
@@ -228,6 +243,10 @@ int main()
 	processVectors(denominations, amounts);
 
 	time = clock() - time;	
+
+	float convertedTime = ((float)time)/(CLOCKS_PER_SEC);
+	
+	outputFile << convertedTime << " seconds" << endl;
 
 	outputFile.close();
 
