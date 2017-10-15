@@ -192,7 +192,7 @@ void processVectors(vector < vector <int> > denominations, vector <int> amounts)
 
 void generateAmounts(vector <int>& amounts)
 {
-	int amount = 16000;
+	int amount = 32000;
 
 	outputFile << "Amount to make change for: " << amount << endl;
 
@@ -204,7 +204,7 @@ void generateAmounts(vector <int>& amounts)
 
 void generateDenominations(vector < vector <int> >& denominations, vector <int> amounts)
 {
-	int valueCount = 8000;
+	int valueCount = 16000;
 
 	outputFile << "# of values in each denomination set: " << valueCount << endl;
 

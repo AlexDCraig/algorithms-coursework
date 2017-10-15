@@ -1,4 +1,4 @@
-Amount to make change for: 8000
-# of values in each denomination set: 4000
+Amount to make change for: 32000
+# of values in each denomination set: 16000
 # of amounts and vectors = 100
-103.04 seconds
+1645.73 seconds
