@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iomanip>
 #include <string>
+#include <time.h>
 #include <vector>
 #include <sstream>
 #include <algorithm>
@@ -49,7 +50,7 @@ void findCoinsUsed(vector <int> coinsUsed, vector <int> coins, vector <int>& cha
 
 	if (coinsUsed.at(coinsUsed.size() - 1) == -1)
 	{
-		cout << "Entered a problem without a solution." << endl;
+		cout << "No solutions possible." << endl;
 		exit(1);
 	}
 
@@ -119,7 +120,7 @@ void processVectors(vector < vector <int> > denominations, vector <int> amounts)
 		changeResults.push_back(changeResult);
 	}
 
-	outputFile.open("change.txt");
+	outputFile.open("test.txt");
 	
 	// The output file will match the denominations and amounts but add two lines for each one.
 	int maxLines = 2 * (denominations.size() + amounts.size());
@@ -181,75 +182,54 @@ void processVectors(vector < vector <int> > denominations, vector <int> amounts)
 			printCounter = 0;
 	}
 
-	outputFile.close();
+}
+
+void generateAmounts(vector <int>& amounts)
+{
+	for (int i = 0; i < 1; i++)
+	{
+		int amount = rand() % 20 + 1; // [1, 19]	
+		amounts.push_back(amount);
+	}
+}
+
+void generateDenominations(vector < vector <int> >& denominations, vector <int> amounts)
+{
+	for (int i = 0; i < 1; i++)
+	{
+		vector <int> denomination;
+
+		int valueCount = rand() % 5;
+
+		for (int j = 0; j < valueCount; j++)
+		{
+			int coin = rand() % amounts.at(i) + 1;
+			denomination.push_back(coin);
+		}
+
+		denominations.push_back(denomination);
+	}
 }
 
 int main()
 {
-	ifstream inputFile;
-	inputFile.open("amount.txt");
+	srand(time(NULL));
+
+	clock_t time;	
+
 	vector < vector <int> > denominations;
-	vector <int> amounts;		
-	string line;
-
-	if (!inputFile)
-	{
-		cout << "Error opening file." << endl;
-		return 1;
-	}
-
-	int outerCounter = 0;
-	bool isDenom; // Denominations are on lines 0, 2, 4... so either 0 or an even number. Amounts are on lines 1, 3, 5... so an odd number. 
-
-	// Load  line by line.
-	while (getline(inputFile, line))
-	{
-		if (outerCounter % 2 == 0 || outerCounter == 0)
-			isDenom = true;
-
-		else
-			isDenom = false;
-
-		// Parse the string.
-		stringstream stream(line);
-
-		vector <int> currentDenominations; 
-		int currentAmount;
-
-		int innerCounter = 0;
-
-		while (1)
-		{	
-			int n;
-			stream >> n; 
+	vector <int> amounts;	
+		
+	generateAmounts(amounts);
+	generateDenominations(denominations, amounts);
 	
-			if (stream)
-			{
-				if (isDenom == true) 
-					currentDenominations.push_back(n);
-
-				else if (isDenom == false)
-					currentAmount = n;
-			}
-
-			else if (!stream) // No more string to parse, break the infinite loop.
-				break;		
-
-			innerCounter++;
-		}
-
-		if (isDenom == true)
-			denominations.push_back(currentDenominations);
-
-		else if (isDenom == false)
-			amounts.push_back(currentAmount);
-
-		outerCounter++;
-	}
-
-	inputFile.close();
+	time = clock();
 
 	processVectors(denominations, amounts);
+
+	time = clock() - time;	
+
+	outputFile.close();
 
 	return 0;
 }
