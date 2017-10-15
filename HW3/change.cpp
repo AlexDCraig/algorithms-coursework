@@ -47,8 +47,9 @@ void processDoubleVec(vector < vector <int> > doubleVec)
 void adjustChangeResult(vector <int>& changeResult, vector <int> coins)
 {
 	vector <int> adjusted;
+	int adjustedIndex = 0;
 
-	for (int i = 0; i < changeResult.size(); i++)
+	for (int i = 0; i < coins.size(); i++)
 		adjusted.push_back(0);
 
 	for (int i = 0; i < coins.size(); i++)
@@ -58,7 +59,9 @@ void adjustChangeResult(vector <int>& changeResult, vector <int> coins)
 		for (int j = 0; j < changeResult.size(); j++)
 		{
 			if (changeResult.at(j) == curValue)
+			{
 				adjusted.at(i) += 1;
+			}
 		}
 	}
 
