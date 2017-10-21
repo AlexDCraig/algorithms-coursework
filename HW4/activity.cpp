@@ -103,19 +103,19 @@ bool sortFunction(ACTIVITY i, ACTIVITY j)
 	return i.finishTime > j.finishTime;
 }
 
-void Greedy_Activity_Selector(vector <int> startTimes, vector <int> finishTimes)
+void Greedy_Activity_Selector(vector <int> activityNumbers, vector <int> startTimes, vector <int> finishTimes)
 {
 	vector <int> chosenActivities;
 	int n = startTimes.size();
 	int i = 0;
 
-	chosenActivities.push_back(i);
+	chosenActivities.push_back(activityNumbers.at(i));
 
 	for (int j = 1; j < n; j++)
 	{
 		if (finishTimes.at(j) <= startTimes.at(i))
 		{
-			chosenActivities.push_back(j);
+			chosenActivities.push_back(activityNumbers.at(j));
 			i = j; 
 		}
 	}
@@ -129,6 +129,7 @@ void Greedy_Activity_Selector(vector <int> startTimes, vector <int> finishTimes)
 
 	cout << endl;
 	cout << endl;
+	
 }
 
 void processActivitySets(vector <ACTIVITYSET> activitySets)
@@ -142,11 +143,11 @@ void processActivitySets(vector <ACTIVITYSET> activitySets)
 		// sort tmp.activities.begin(), tmp.activities.end() by finish time decreasing
 		sort(tmp.activities.begin(), tmp.activities.end(), sortFunction);
 
-		//vector <int> activityNumbers = getActivityNumbers(tmp);
+		vector <int> activityNumbers = getActivityNumbers(tmp);
 		vector <int> startTimes = getStartTimes(tmp);
 		vector <int> finishTimes = getFinishTimes(tmp); 
 
-		Greedy_Activity_Selector(startTimes, finishTimes);
+		Greedy_Activity_Selector(activityNumbers, startTimes, finishTimes);
 	}
 }
 
