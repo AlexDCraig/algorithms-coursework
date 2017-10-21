@@ -1,3 +1,8 @@
+/* Alex Hoffer: Activity Selection Last-to-Start
+ * Algorithm is Theta(n log n) because of vector sorting
+ * Greedy algorithm where given an input of activities sorted by decreasing finish time, we (1) pop the first element off the set and put it in our schedule and then (2) we pop each successive activity off the set and if it is compatible with our schedule, then we add it to our schedule
+ */
+
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -23,6 +28,14 @@ typedef struct activitySet
 	vector <ACTIVITY> activities;
 } ACTIVITYSET;
 
+// Process the input file by the following strategy:
+// (1) If there is one value on a line, it is the beginning of a new activity set.
+// 	(1a) If there has never been 1 value on a line before, then this is the 	first activity set and so we don't push anything, we just create.
+// 	(1b) If this is not the first activity set, then we push the previous
+// 	activity set and create a new one.
+//
+// (2) If there are three values on a line, it is an activity that falls within the current activity set. 
+// (3) Upon exiting, push the last accumulated activity set into our set of activity sets 
 void parseFile(vector <ACTIVITYSET>& activitySets, vector < vector <int> >& allLines)
 {
 	ACTIVITYSET* act1;
@@ -62,7 +75,7 @@ void parseFile(vector <ACTIVITYSET>& activitySets, vector < vector <int> >& allL
 	activitySets.push_back(*act1);
 }
 
-
+/* Helper functions to maintain three separate sets for activity Numbers, start times, and finish times. The three sets map to each other via index. */
 vector <int> getActivityNumbers(ACTIVITYSET actSet)
 {
 	vector <ACTIVITY> activities = actSet.activities;
@@ -97,12 +110,13 @@ vector <int> getFinishTimes(ACTIVITYSET actSet)
 	return finishTimes;
 }
 
-
+// Helper function to sort our activity vector by decreasing finish time.
 bool sortFunction(ACTIVITY i, ACTIVITY j)
 {
 	return i.finishTime > j.finishTime;
 }
 
+// Greedy algorithm where you choose the last finishing activity at each choice and then include it in a schedule of activities if and only if it does not overlap with previously chosen activities.
 void Greedy_Activity_Selector(vector <int> activityNumbers, vector <int> startTimes, vector <int> finishTimes)
 {
 	vector <int> chosenActivities;
@@ -132,6 +146,10 @@ void Greedy_Activity_Selector(vector <int> activityNumbers, vector <int> startTi
 	
 }
 
+// Given a set of all activity sets, process them like so:
+// Sort each activity set from the activity with the latest finish time to the activity with the earliest finish time
+// Given a sorted activity set, process the activityNumbers, startTimes, and finishTimes into separate sets.
+// Pass each of these sets into our Greedy Activity Selector algorithm to get an optimally maximum number of compatible activities and a list of such activities.
 void processActivitySets(vector <ACTIVITYSET> activitySets)
 {
 	for (int i = 0; i < activitySets.size(); i++)
@@ -166,6 +184,7 @@ int main()
 
 	vector < vector < int > > allLines;
 
+	// Use a vector of vectors to collect the ints from each line.
 	// Load  line by line.
 	while (getline(inputFile, line))
 	{
