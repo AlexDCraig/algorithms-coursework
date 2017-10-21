@@ -60,23 +60,93 @@ void parseFile(vector <ACTIVITYSET>& activitySets, vector < vector <int> >& allL
 	}
 
 	activitySets.push_back(*act1);
+}
 
+
+vector <int> getActivityNumbers(ACTIVITYSET actSet)
+{
+	vector <ACTIVITY> activities = actSet.activities;
+	vector <int> activityNumbers;
+
+	for (int i = 0; i < activities.size(); i++)
+		activityNumbers.push_back(activities.at(i).activityNumber);
+
+	return activityNumbers;
+}
+
+vector <int> getStartTimes(ACTIVITYSET actSet)
+{
+	vector <ACTIVITY> activities = actSet.activities;
+	vector <int> startTimes;
+
+	for (int i = 0; i < activities.size(); i++)
+		startTimes.push_back(activities.at(i).startTime);
+
+	return startTimes;
+
+}
+
+vector <int> getFinishTimes(ACTIVITYSET actSet)
+{
+	vector <ACTIVITY> activities = actSet.activities;
+	vector <int> finishTimes;
+
+	for (int i = 0; i < activities.size(); i++)
+		finishTimes.push_back(activities.at(i).finishTime);
+
+	return finishTimes;
+}
+
+
+bool sortFunction(ACTIVITY i, ACTIVITY j)
+{
+	return i.finishTime > j.finishTime;
+}
+
+void Greedy_Activity_Selector(vector <int> startTimes, vector <int> finishTimes)
+{
+	vector <int> chosenActivities;
+	int n = startTimes.size();
+	int i = 0;
+
+	chosenActivities.push_back(i);
+
+	for (int j = 1; j < n; j++)
+	{
+		if (finishTimes.at(j) <= startTimes.at(i))
+		{
+			chosenActivities.push_back(j);
+			i = j; 
+		}
+	}
+
+	cout << "Number of activities selected = " << chosenActivities.size() << endl;
+	
+	cout << "Activities: ";
+
+	for (int i = 0; i < chosenActivities.size(); i++)
+		cout << chosenActivities.at(i) << " ";
+
+	cout << endl;
+	cout << endl;
+}
+
+void processActivitySets(vector <ACTIVITYSET> activitySets)
+{
 	for (int i = 0; i < activitySets.size(); i++)
 	{
+		cout << "Set " << i + 1 << endl;
+
 		ACTIVITYSET tmp = activitySets.at(i);
+		
+		// sort tmp.activities.begin(), tmp.activities.end() by finish time decreasing
+		sort(tmp.activities.begin(), tmp.activities.end(), sortFunction);
 
-		cout << "Activity Set " << i + 1 << " " << endl;
-		cout << "Number of activities " << tmp.numberOfActivities << endl;
+		//vector <int> activityNumbers = getActivityNumbers(tmp);
+		vector <int> startTimes = getStartTimes(tmp);
+		vector <int> finishTimes = getFinishTimes(tmp); 
 
-		vector <ACTIVITY> tmpAct = tmp.activities;
-
-		for (int j = 0; j < tmpAct.size(); j++)
-		{
-			ACTIVITY tmpact1 = tmpAct.at(j);
-			cout << "Activity number: " << tmpact1.activityNumber << endl;
-			cout << "Start time: " << tmpact1.startTime << endl;
-			cout << "Finish time: " << tmpact1.finishTime << endl;
-		}
+		Greedy_Activity_Selector(startTimes, finishTimes);
 	}
 }
 
@@ -123,6 +193,8 @@ int main()
 	}
 
 	parseFile(activitySets, allLines);
+
+	processActivitySets(activitySets);
 
 	inputFile.close();
 
