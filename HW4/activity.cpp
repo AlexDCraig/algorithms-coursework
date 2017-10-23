@@ -10,7 +10,7 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
-
+#include <math.h>
 using namespace std;
 
 ofstream outputFile; // Our output file.
@@ -27,6 +27,69 @@ typedef struct activitySet
 	int numberOfActivities;
 	vector <ACTIVITY> activities;
 } ACTIVITYSET;
+
+// Merge subroutine: We have two subarrays, one ranging from 0 to mid and one ranging from mid to max that are sorted. Let's merge them.
+vector <ACTIVITY> merge(vector <ACTIVITY> firstSubarray, vector <ACTIVITY> secondSubarray)
+{
+	vector <ACTIVITY> sortedVector; // Where we'll place our results.
+	int firstSubArrCount, secondSubArrCount; // We'll use the [] notation to access the proper index of the subarrays.
+	firstSubArrCount = 0; // Start at 0, begin iterating thru both subarrays.
+	secondSubArrCount = 0;
+
+	int onFirstSubArr = false; // A T/F switch we'll use: is the right element to take right now on the first subarray? If so, switch to 1. If not, switch to 0.
+	int totalSizeOfSortedArr = firstSubarray.size() + secondSubarray.size();	
+	
+	for (int j = 0; j < totalSizeOfSortedArr; j++)
+	{
+		if (firstSubArrCount < firstSubarray.size()) // Still more left in the first subarray.
+		{
+			if (secondSubArrCount < secondSubarray.size()) // Still room in the second subarray.
+			{
+				onFirstSubArr = (firstSubarray[firstSubArrCount].finishTime > secondSubarray[secondSubArrCount].finishTime); // Is the first subarray's element greater than the second? If so, set this to true and we'll grab that element and put it into our sorted vector.
+			}
+
+			else // Seond sub array has already been traversed, focus on the first subarray.
+			{
+				onFirstSubArr = true;
+			}
+		}
+
+		else
+			onFirstSubArr = false; // First subarray has already been traversed.
+		
+		if (onFirstSubArr == true) // Focus on the first subarray.
+		{
+			sortedVector.push_back(firstSubarray[firstSubArrCount]);			
+			if (firstSubArrCount < firstSubarray.size())
+				firstSubArrCount += 1; // Move further into the first subarray.
+		}
+
+		else
+		{
+			sortedVector.push_back(secondSubarray[secondSubArrCount]);
+			if (secondSubArrCount < secondSubarray.size())
+				secondSubArrCount += 1;
+		}
+	}
+
+	return sortedVector;
+}
+
+vector <ACTIVITY> mergeSort(vector <ACTIVITY> activities)
+{
+	if (activities.size() <= 1) // Base case: only one element in doubleVec, and so it is by definition sorted.
+		return activities;
+
+	int halfIndex = ceil(activities.size() / 2); // The midpoint of the overall array that separates the two subarrays is ceiling(n/2)
+
+	// Set up vectors for the first subarray and second subarray using C++ vector iterators.
+	vector <ACTIVITY> firstSub(activities.begin(), activities.begin() + halfIndex);
+	vector <ACTIVITY> secondSub(activities.begin() + halfIndex, activities.end());
+
+	// Pass to merge the sorted versions of both subarrays
+	// This statement will recursively call mergeSort on both subarrays until the base case of containing one element is reached.
+	return merge(mergeSort(firstSub), mergeSort(secondSub));
+}
 
 // Process the input file by the following strategy:
 // (1) If there is one value on a line, it is the beginning of a new activity set.
@@ -159,7 +222,9 @@ void processActivitySets(vector <ACTIVITYSET> activitySets)
 		ACTIVITYSET tmp = activitySets.at(i);
 		
 		// sort tmp.activities.begin(), tmp.activities.end() by finish time decreasing
-		sort(tmp.activities.begin(), tmp.activities.end(), sortFunction);
+		// sort(tmp.activities.begin(), tmp.activities.end(), sortFunction);
+
+		tmp.activities = mergeSort(tmp.activities);
 
 		vector <int> activityNumbers = getActivityNumbers(tmp);
 		vector <int> startTimes = getStartTimes(tmp);
