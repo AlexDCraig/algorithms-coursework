@@ -10,10 +10,9 @@ using namespace std;
 
 ofstream outputFile; // Our output file.
 
-vector <string> colors;
-
 typedef struct V
 {
+	string name;
 	string color; // Color of vertex.
 	int d; // Distance of vertex from source.
 	V* p; // Pointer to predecessor vertex.
@@ -32,20 +31,57 @@ typedef struct graph
 	vector < vector < int > > AdjList;
 } GRAPH;
 
-void printVector(vector <string> a)
+// Given graph G and a wrestler's nane, find the index of his vertex.
+int findVertex(GRAPH* G, string wrestName)
 {
-	for (int i = 0; i < a.size(); i++)
-		cout << a.at(i) << " ";
+	vector <V> tmpVertices = G->Vertices;
 
-	cout << endl;
+	for (int i = 0; i < tmpVertices.size(); i++)
+	{
+		if (tmpVertices.at(i).name == wrestName)
+			return i;
+	}
+
+	return -1;
+}
+
+GRAPH* drawGraph(int numVertices, vector <string> vertexNames, int numEdges, vector < vector < string > > edges)
+{
+	GRAPH* graph = new GRAPH;
+
+	for (int i = 0; i < numVertices; i++)
+	{
+		V vertex;
+		vertex.name = vertexNames.at(i);
+		vertex.color = "WHITE";
+		vertex.d = -1;
+		vertex.p = NULL;
+		graph->Vertices.push_back(vertex);
+	}
+
+	edges.erase(edges.begin());
+
+	for (int i = 0; i < edges.size(); i++)
+	{
+		vector <string> vertices = edges.at(i);
+		E edge;
+		int vertex1 = findVertex(graph, vertices.at(0));
+		int vertex2 = findVertex(graph, vertices.at(1));
+		edge.v1 = graph->Vertices.at(vertex1);
+		edge.v2 = graph->Vertices.at(vertex2);
+		graph->Edges.push_back(edge);
+	}
+
+	return graph;
+}
+
+void printGraph(GRAPH* g)
+{
+	
 }
 
 int main(int argc, char* argv[])
 {
-	colors.push_back("WHITE");
-	colors.push_back("GREY");
-	colors.push_back("BLACK");
-
 	int numWrestlers = 0;
 	bool onNumWrestlers = true;
 	vector <string> wrestlerNames;
@@ -148,6 +184,8 @@ int main(int argc, char* argv[])
 		}
 		
 	}
+
+	GRAPH* graph = drawGraph(numWrestlers, wrestlerNames, numRivalries, rivalries);
 
 	inputFile.close();
 
