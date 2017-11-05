@@ -99,7 +99,7 @@ void createAdjacencyList(GRAPH* G)
 	{
 		vector <int> list;
 		V curVertex = G->Vertices.at(i);
-		
+
 		for (int j = 0; j < G->Edges.size(); j++)
 		{
 			E tmpEdge = G->Edges.at(j);
@@ -176,11 +176,13 @@ void printAdjacencyList(GRAPH* g)
 
 // Perform a Breadth-First Search on G beginning at the first wrestler.
 // This will add distances from the source vertex to each vertex.
-void BFS(GRAPH* G)
+void BFS(GRAPH* G, int s)
 {
 	vector <int> Q; // Our queue. Initialize it to 0, which is the first index of our vertices.
-	Q.push_back(0);	
+	Q.push_back(s);	
 	int size = 1;
+
+	//V* firstNode = &(G->Vertices.at(
 
 	while (Q.size() > 0)
 	{
@@ -401,7 +403,12 @@ int main(int argc, char* argv[])
 
 	GRAPH* graph = drawGraph(numWrestlers, wrestlerNames, numRivalries, rivalries);
 	createAdjacencyList(graph);	
-	BFS(graph);
+
+	for (int i = 0; i < graph->Vertices.size(); i++)
+	{
+		BFS(graph, i);
+	}
+
 	classifyVertices(graph);
 	string possible = verifyCorrectness(graph);
 	Answer(possible, graph);
