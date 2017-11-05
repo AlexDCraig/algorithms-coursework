@@ -21,8 +21,8 @@ typedef struct V
 
 typedef struct E
 {
-	V v1; // The first vertex in an edge.
-	V v2; // The second.
+	V* v1; // The first vertex in an edge.
+	V* v2; // The second.
 } E;
 
 typedef struct graph
@@ -69,8 +69,8 @@ GRAPH* drawGraph(int numVertices, vector <string> vertexNames, int numEdges, vec
 		E edge;
 		int vertex1 = findVertex(graph, vertices.at(0));
 		int vertex2 = findVertex(graph, vertices.at(1));
-		edge.v1 = graph->Vertices.at(vertex1);
-		edge.v2 = graph->Vertices.at(vertex2);
+		edge.v1 = &(graph->Vertices.at(vertex1));
+		edge.v2 = &(graph->Vertices.at(vertex2));
 		graph->Edges.push_back(edge);
 	}
 
@@ -89,18 +89,18 @@ void createAdjacencyList(GRAPH* G)
 		for (int j = 0; j < G->Edges.size(); j++)
 		{
 			E tmpEdge = G->Edges.at(j);
-			V vertex1 = tmpEdge.v1;
-			V vertex2 = tmpEdge.v2;
+			V* vertex1 = tmpEdge.v1;
+			V* vertex2 = tmpEdge.v2;
 
-			if (curVertex.name == vertex1.name)
+			if (curVertex.name == vertex1->name)
 			{
-				int vertex2Index = findVertex(G, vertex2.name);
+				int vertex2Index = findVertex(G, vertex2->name);
 				list.push_back(vertex2Index);
 			}
 
-			else if (curVertex.name == vertex2.name)
+			else if (curVertex.name == vertex2->name)
 			{
-				int vertex1Index = findVertex(G, vertex1.name);
+				int vertex1Index = findVertex(G, vertex1->name);
 				list.push_back(vertex1Index);
 			}
 		}
@@ -136,7 +136,7 @@ void printGraph(GRAPH* g)
 	for (int i = 0; i < g->Edges.size(); i++)
 	{
 		E edge1 = g->Edges.at(i);
-		cout << edge1.v1.name << " ---- " << edge1.v2.name;
+		cout << edge1.v1->name << " ---- " << edge1.v2->name;
 		cout << endl;
 	}
 }
@@ -215,25 +215,13 @@ string verifyCorrectness(GRAPH* G)
 	for (int i = 0; i < edges.size(); i++)
 	{
 		E edge = edges.at(i);
-		V firstVertex = edge.v1;
-		V secondVertex = edge.v2;
+		V* firstVertex = edge.v1;
+		V* secondVertex = edge.v2;
 
-		if (firstVertex.team == "BABYFACE")
+		if (firstVertex->team == secondVertex->team)
 		{
-			if (secondVertex.team != "HEEL")
-			{
-				result = "No";
-				return result;
-			}
-		}
-
-		else if (firstVertex.team == "HEEL")
-		{
-			if (secondVertex.team != "BABYFACE")
-			{
-				result = "No";
-				return result;
-			}
+			result = "No";
+			return result;
 		}
 	}
 
