@@ -124,6 +124,8 @@ void printGraph(GRAPH* g)
 		if (tmp != NULL)
 			cout << " " << tmp->name;
 
+		cout << " " << g->Vertices.at(i).team;
+
 		cout << endl;
 	}
 
@@ -187,6 +189,101 @@ void BFS(GRAPH* G)
 		}
 
 		currentNode->color = "BLACK";
+	}
+}
+
+void classifyVertices(GRAPH* G)
+{
+	for (int i = 0; i < G->Vertices.size(); i++)
+	{
+		V* v1 = &(G->Vertices.at(i));
+		int distance = v1->d;
+
+		if (distance == 0 || distance % 2 == 0)
+			v1->team = "Babyface";
+
+		else
+			v1->team = "Heel";
+	}
+}
+
+string verifyCorrectness(GRAPH* G)
+{
+	vector <E> edges = G->Edges;
+	string result;
+
+	for (int i = 0; i < edges.size(); i++)
+	{
+		E edge = edges.at(i);
+		V firstVertex = edge.v1;
+		V secondVertex = edge.v2;
+
+		if (firstVertex.team == "BABYFACE")
+		{
+			if (secondVertex.team != "HEEL")
+			{
+				result = "No";
+				return result;
+			}
+		}
+
+		else if (firstVertex.team == "HEEL")
+		{
+			if (secondVertex.team != "BABYFACE")
+			{
+				result = "No";
+				return result;
+			}
+		}
+	}
+
+	result = "Yes";
+
+	return result;
+}
+
+void printTeams(GRAPH* G)
+{
+	vector <string> babyfaces;
+	vector <string> heels;
+	vector <V> vertices = G->Vertices;
+
+	for (int i = 0; i < vertices.size(); i++)
+	{
+		V tmp = vertices.at(i);
+		
+		if (tmp.team == "Babyface")
+			babyfaces.push_back(tmp.name);
+
+		else 
+			heels.push_back(tmp.name);
+	}
+
+	cout << "Babyfaces: ";
+	
+	for (int i = 0; i < babyfaces.size(); i++)
+		cout << babyfaces.at(i) << " ";
+
+	cout << endl;
+
+	cout << "Heels: ";
+
+	for (int i = 0; i < heels.size(); i++)
+		cout << heels.at(i) << " ";
+
+}
+
+void Answer(string possible, GRAPH* G)
+{
+	if (possible == "No")
+		cout << possible << endl;
+
+	else
+	{
+		cout << possible << endl;
+
+		printTeams(G);
+		cout << endl;
 	}
 }
 
@@ -300,8 +397,9 @@ int main(int argc, char* argv[])
 	GRAPH* graph = drawGraph(numWrestlers, wrestlerNames, numRivalries, rivalries);
 	createAdjacencyList(graph);	
 	BFS(graph);
-	printGraph(graph);
-	printAdjacencyList(graph);	
+	classifyVertices(graph);
+	string possible = verifyCorrectness(graph);
+	Answer(possible, graph);
 
 	return 0;
 }
