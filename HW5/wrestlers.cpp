@@ -1,3 +1,10 @@
+/* Alex Hoffer's Graph Algorithms
+ * Given a set of Wrestlers and Rivalries:
+ * Transform each Wrestler into a node in the graph
+ * Connect the Wrestlers via edges that correspond to Rivalries
+ * Find out if it's possible to designate each Wrestler as one of two teams such that their rivalry is between two teams.
+ */
+
 #include <iostream>
 #include <fstream>
 #include <iomanip>
@@ -10,6 +17,7 @@ using namespace std;
 
 ofstream outputFile; // Our output file.
 
+/* Vertices in the graph. */
 typedef struct V
 {
 	string team;
@@ -19,6 +27,7 @@ typedef struct V
 	V* p; // Pointer to predecessor vertex.
 } V;
 
+/* Edges in the graph. */
 typedef struct E
 {
 	V* v1; // The first vertex in an edge.
@@ -46,10 +55,12 @@ int findVertex(GRAPH* G, string wrestName)
 	return -1;
 }
 
+/* Draw the wrestlers graph with rivalries connecting them. */
 GRAPH* drawGraph(int numVertices, vector <string> vertexNames, int numEdges, vector < vector < string > > edges)
 {
 	GRAPH* graph = new GRAPH;
 
+	// Go through all of the given vertices and add them to the graph.
 	for (int i = 0; i < numVertices; i++)
 	{
 		V vertex;
@@ -61,8 +72,10 @@ GRAPH* drawGraph(int numVertices, vector <string> vertexNames, int numEdges, vec
 		graph->Vertices.push_back(vertex);
 	}
 
+	// Addressing some weird issue.
 	edges.erase(edges.begin());
 
+	// Add all edges to the graph.
 	for (int i = 0; i < edges.size(); i++)
 	{
 		vector <string> vertices = edges.at(i);
@@ -77,6 +90,7 @@ GRAPH* drawGraph(int numVertices, vector <string> vertexNames, int numEdges, vec
 	return graph;
 }
 
+// Given graph G, create an adjacency list of all neighbors of a node for each node.
 void createAdjacencyList(GRAPH* G)
 {
 	vector < vector <int> > tempAdjList;
@@ -160,6 +174,8 @@ void printAdjacencyList(GRAPH* g)
 	}
 }
 
+// Perform a Breadth-First Search on G beginning at the first wrestler.
+// This will add distances from the source vertex to each vertex.
 void BFS(GRAPH* G)
 {
 	vector <int> Q; // Our queue. Initialize it to 0, which is the first index of our vertices.
@@ -192,6 +208,7 @@ void BFS(GRAPH* G)
 	}
 }
 
+// Make each wrestler either a Babyface or a Heel.
 void classifyVertices(GRAPH* G)
 {
 	for (int i = 0; i < G->Vertices.size(); i++)
@@ -207,6 +224,7 @@ void classifyVertices(GRAPH* G)
 	}
 }
 
+// Go through each edge and make sure the wrestlers in a rivalry are on different teams.
 string verifyCorrectness(GRAPH* G)
 {
 	vector <E> edges = G->Edges;
@@ -298,7 +316,6 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	// Use a vector of vectors to collect the ints from each line.
 	// Load  line by line.
 	while (getline(inputFile, line))
 	{
