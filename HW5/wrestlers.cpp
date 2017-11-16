@@ -395,6 +395,9 @@ int main(int argc, char* argv[])
 		{
 			rivalries.push_back(rivalry);
 			counter++;
+
+			if (counter == numRivalries)
+				break;
 		}
 		
 	}
