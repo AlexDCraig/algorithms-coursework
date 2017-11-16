@@ -1,6 +1,8 @@
 #include <cstdio>
 #include <vector>
 #include <algorithm>
+#include <stdio.h>
+#include <string.h>
 #include <ctime>
 #include <cmath>
 #include <sstream>
@@ -10,6 +12,8 @@ using namespace std;
 typedef vector<int> candidate;
 
 ifstream inputFile;
+ofstream outputFile;
+string outputFileName;
 
 class Data {
 public:
@@ -219,9 +223,17 @@ public:
 				}	
 			}
 		}
-		data.print(best);
-		cout << "Size " << best.size() << endl;
-		printf("%lf\n", minTour);
+		
+		
+		outputFile.open(outputFileName.c_str());
+		outputFile << minTour << "\n";
+	
+		for (int i = 0; i < best.size(); i++)
+			outputFile << best.at(i)-1 << "\n";
+
+		outputFile.close();
+//		data.print(best);
+//		printf("%lf\n", minTour);
 	}
 
 	double eval(candidate C) {
@@ -231,10 +243,12 @@ public:
 };
 
 int main(int argc, char* argv[]) {
-	inputFile.open(argv[1]);		
+	inputFile.open(argv[1]);
+	string firstPart(argv[1]);	
+	outputFileName = firstPart + ".AlexHoffer.tour";	
 	time_t sysTime;
 	srand(time(&sysTime));
-	SimulatedAnnealing SA;					// algorithm
+	SimulatedAnnealing SA;
 	SA.run();
 	return 0;
 }
