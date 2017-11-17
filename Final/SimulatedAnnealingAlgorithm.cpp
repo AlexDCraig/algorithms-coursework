@@ -225,7 +225,10 @@ public:
 		}
 		
 		
-		outputFile.open(outputFileName.c_str());
+		twoOpt();
+		
+
+	/*	outputFile.open(outputFileName.c_str());
 		outputFile << minTour << "\n";
 	
 		for (int i = 0; i < best.size(); i++)
@@ -233,8 +236,107 @@ public:
 
 		outputFile.close();
 //		data.print(best);
-//		printf("%lf\n", minTour);
+//		printf("%lf\n", minTour); */
 	}
+
+	void twoOpt()
+	{
+		bool changed;
+
+		do {
+			changed = false;
+			
+			for (int i = 0; i < best.size() - 4; i++)
+			{
+				for (int j = i + 3; j < best.size() - 4; j++)
+				{
+					int distance1 = data.computeDistance(best.at(i) -1, best.at(i + 1) -1);
+					int distance2 = data.computeDistance(best.at(j-1) -1, best.at(j)-1);
+					int distance3 = data.computeDistance(best.at(i)-1, best.at(j-1)-1);
+					int distance4 = data.computeDistance(best.at(i+1)-1, best.at(j)-1);
+
+					if ((distance1 + distance2) > (distance3 + distance4))
+					{
+						reverse(best.begin() + i + 1, best.begin() + j);
+						changed = true;
+					}
+				}
+			}
+		}
+		while (changed); 
+
+		twoHalfOpt();
+	}
+
+	void twoHalfOpt()
+	{
+		bool changed;
+
+		do
+		{
+			changed = false;
+		
+			for (int i = 0; i < best.size() - 4; i++)
+			{
+				for (int j = i + 3; j < best.size() - 4; j++)
+				{
+					int option1current = (data.computeDistance(best.at(i) - 1, best.at(i+1) - 1)) + (data.computeDistance(best.at(i+1)-1, best.at(i+2)-1)) + (data.computeDistance(best.at(j-1)-1, best.at(j)-1));
+					int option1Check = (data.computeDistance(best.at(i)-1, best.at(i+2)-1)) + (data.computeDistance(best.at(j-1) -1, best.at(i+1)-1)) + (data.computeDistance(best.at(i+1) -1, best.at(j)-1));
+
+					if (option1Check < option1current)
+					{
+						int temp = best.at(i+1);
+						for (int m = i + 2; m < j; m++)
+							best.at(m-1) = best.at(m);
+						best.at(j-1) = temp;
+						changed = true;
+					}
+
+					int option2current = (data.computeDistance(best.at(i)-1, best.at(i+1)-1)) + (data.computeDistance(best.at(j-2)-1, best.at(j-1)-1)) + (data.computeDistance(best.at(j-1)-1, best.at(j)-1));
+					int option2Check = (data.computeDistance(best.at(i)-1, best.at(j-1)-1)) + (data.computeDistance(best.at(j-1)-1, best.at(i+1)-1)) + (data.computeDistance(best.at(j-2)-1, best.at(j)-1));
+					
+					if (option2Check < option2current)
+					{
+						int temp = best.at(j-1);							
+							
+						for (int m = j -2; m > i; m--)
+							best.at(m+1) = best.at(m);
+						
+						best.at(i+1) = temp;
+						changed = true;
+					}
+				}
+			}
+
+		} while (changed);
+
+		calculatePathDistance();
+	}
+
+	void calculatePathDistance()
+	{
+		int result = 0;
+
+		for (int i = 0; i < best.size() - 2; i++)
+			result += data.computeDistance(best.at(i)-1, best.at(i + 1)-1);
+
+		result += data.computeDistance(best.at(0)-1, best.at(best.size() - 1)-1);
+  		minTour = result;
+		outputToFile();
+	}
+
+	void outputToFile()
+	{
+		cout << best.size() << endl;
+		outputFile.open(outputFileName.c_str());
+		outputFile << minTour << "\n";
+	
+		for (int i = 0; i < best.size(); i++)
+			outputFile << best.at(i)-1 << "\n";
+
+		outputFile.close();
+	}
+
 
 	double eval(candidate C) {
 		return data.evaluate(C);
