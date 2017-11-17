@@ -173,7 +173,7 @@ public:
 class SimulatedAnnealing {
 public:
 	candidate best;
-	double minTour;
+	long int minTour;
 	Data data;
 
 	SimulatedAnnealing() {
@@ -317,17 +317,16 @@ public:
 	{
 		int result = 0;
 
-		for (int i = 0; i < best.size() - 2; i++)
+		for (int i = 0; i < best.size() - 1; i++)
 			result += data.computeDistance(best.at(i)-1, best.at(i + 1)-1);
 
-		result += data.computeDistance(best.at(0)-1, best.at(best.size() - 1)-1);
+		result += data.computeDistance(best.at(best.size() -1)-1, best.at(0)-1);
   		minTour = result;
 		outputToFile();
 	}
 
 	void outputToFile()
 	{
-		cout << best.size() << endl;
 		outputFile.open(outputFileName.c_str());
 		outputFile << minTour << "\n";
 	
