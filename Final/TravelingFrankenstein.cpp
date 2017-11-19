@@ -1,3 +1,4 @@
+/* Alex Hoffer: Traveling Frankenstein Solution. A solution to the Traveling Salesman Problem wherein a first path is generated using the Simulated Annealing algorithm, a subsequent path is found using the 2-Opt algorithm, and a third optimized path is found using the 2.5-Opt algorithm. Called the Traveling Frankenstein due to the stitching together of multiple TSP solutions to find a great optimal path in a reasonable amount of time. */
 #include <cstdio>
 #include <vector>
 #include <algorithm>
@@ -9,13 +10,14 @@
 #include <iostream>
 #include <fstream>
 using namespace std;
-typedef vector<int> candidate;
+typedef vector<int> possibleSolution;
 
 ifstream inputFile;
 ofstream outputFile;
 string outputFileName;
 
-class Data {
+class cityInformation 
+{
 public:
 	vector< pair<double,double> > cityCoords;
 	vector< vector<double> > cost;
@@ -26,7 +28,8 @@ public:
 	int N;
 	char s[30];
 
-	Data() {
+	cityInformation() 
+	{
 
 			string line;
 			if (!inputFile)
@@ -68,11 +71,6 @@ public:
 					counter++;
 				}		
 			}
-
-
-		// N cities
-	//	scanf("%s",s);
-	//	scanf("%d",&N);
 	
 		N = cityNumbers.size();
 		
@@ -81,21 +79,23 @@ public:
 		vector< double> T;
 		cost.push_back(T);
 
-		for(int i=0;i<N;i++) {
+		for(int i=0;i<N;i++) 
+		{
 			double x,y;
-			//scanf("%lf%lf",&x,&y);
-			//cityCoords.push_back(make_pair(x,y));
 			cityCoords.push_back(make_pair(xCoordinates.at(i), yCoordinates.at(i)));
 		}
 
 		constructAdjacencyMatrix();
 
-		for(int i=0;i<N;i++) {
+		for(int i=0;i<N;i++) 
+		{
 			vector<double> V(N+1);
-			for(int j = 1;j<N;j++) {
-				//scanf("%lf",&V[j]);
+			
+			for(int j = 1;j<N;j++) 
+			{
 				V[j] = adjacencyMatrix[i][j];
 			}
+			
 			cost.push_back(V);
 		}
 	}
@@ -135,9 +135,13 @@ public:
 		}
 	}
 
-	static int myrandom (int i) { return rand()%i;}
+	static int myrandom (int i) 
+	{ 
+		return rand()%i;
+	}
 
-	candidate genRand(candidate C) {
+	possibleSolution genRand(possibleSolution C) 
+	{
 		int l,a,b,temp;
 		l = C.size();
 		a = rand()%l;
@@ -148,11 +152,13 @@ public:
 		return C;
 	}
 
-	double evaluate(candidate C) {
+	double evaluate(possibleSolution C) 
+	{
 		return tourCost(C);
 	}
 
-	double tourCost(candidate C) {
+	double tourCost(possibleSolution C) 
+	{
 		int l = C.size();
 		double tourCost = 0.0;
 		l = l-1;
@@ -162,57 +168,66 @@ public:
 		tourCost += cost[C[l]][C[0]];
 		return tourCost;
 	}
-
-	void print(candidate C) {
-		for(int i=0;i<C.size();i++)
-			printf("%d ",C[i]);
-		printf("\n");
-	}
 };
 
-class SimulatedAnnealing {
+class TravelingFrankenstein
+{
 public:
-	candidate best;
+	possibleSolution best;
 	long int minTour;
-	Data data;
+	cityInformation data;
 
-	SimulatedAnnealing() {
+	TravelingFrankenstein() 
+	{
 		minTour = 0.0;
 	} 
+
 	double randProb()
 	{
-			double p = (rand() / (RAND_MAX + 1.0));
-	    return p;
+		double p = (rand() / (RAND_MAX + 1.0));
+	    	return p;
 	}
-	void run() {
+
+	void SimulatedAnnealing() 
+	{
 		vector <int> V(data.N);
-		for (int i=0;i < data.N;i++) {
+		
+		for (int i=0;i < data.N;i++) 
 			V[i] = i+1;
-		}
-		candidate c = data.genRand(V);
+
+		possibleSolution c = data.genRand(V);
 		best = c;
 		minTour = data.tourCost(c);
-		for(int i=0;i<1000;i++) {
+
+		for(int i=0;i<1000;i++) 
+		{
 			random_shuffle(c.begin(),c.end());
 			double tCost = data.tourCost(c);
-			if(tCost < minTour) {
+			
+			if(tCost < minTour) 
+			{
 				minTour = tCost;
 				best = c;
 			}
 		}
+		
 		c = best;
 		double p,expP,deltaE;
 		double Temp = 1000000000;
-		for(double T=Temp;T > 0.01;T*=0.5) {
-			for(int i=0;i<100000;i++) {
-				candidate n = data.genRand(c);
-				//data.print(n);
+		
+		for (double T = Temp; T > 0.01; T*=0.5) 
+		{
+			for (int i = 0; i < 100000; i++) 
+			{
+				possibleSolution n = data.genRand(c);
+			
 				deltaE = eval(c) - eval(n);
 				deltaE /= T;
 				p = 1 / (1+exp(-1*deltaE));
 				expP = randProb();
-				// printf("p : %lf , expP : %lf\n",p,expP);
-				if(expP < p) { // move
+				
+				if(expP < p) 	
+				{ 
 					c = n;
 					double tCost = data.tourCost(c);
 					if(tCost < minTour ) {
@@ -224,21 +239,12 @@ public:
 			}
 		}
 		
-		
-		twoOpt();
-		
-
-	/*	outputFile.open(outputFileName.c_str());
-		outputFile << minTour << "\n";
-	
-		for (int i = 0; i < best.size(); i++)
-			outputFile << best.at(i)-1 << "\n";
-
-		outputFile.close();
-//		data.print(best);
-//		printf("%lf\n", minTour); */
+		// Given our current best path, let's make it better.
+		twoOpt(); 
 	}
 
+	/* Given an initial optimal candidate solution from the Simulated Annealing algorithm, optimize further using the 2-Opt algorithm.
+ 	* The idea here is to look through the best path we have currently and if an edge crosses over another edge, we swap the nodes such that the edges are now straight. This reduces the total distance our Frankenstein travels. */ 
 	void twoOpt()
 	{
 		bool changed;
@@ -246,6 +252,7 @@ public:
 		do {
 			changed = false;
 			
+			// For each node within bounds, check what nodes it's connected to. If we can reconnect such that there's no crossing over, we reduce distance, so swap the edges.
 			for (int i = 0; i < best.size() - 4; i++)
 			{
 				for (int j = i + 3; j < best.size() - 4; j++)
@@ -255,6 +262,7 @@ public:
 					int distance3 = data.computeDistance(best.at(i)-1, best.at(j-1)-1);
 					int distance4 = data.computeDistance(best.at(i+1)-1, best.at(j)-1);
 
+					// When we travel from node i to node i +  1, and then node j - 1 to node j, we're crossing over in the graph and thereby increasing our total distance. This is because the distance from node i to node j - 1 and then node i + 1 to node j is actually shorter, and yet it still maintains the constraint of reaching each node. Swap the nodes out to optimize the distance.
 					if ((distance1 + distance2) > (distance3 + distance4))
 					{
 						reverse(best.begin() + i + 1, best.begin() + j);
@@ -268,6 +276,7 @@ public:
 		twoHalfOpt();
 	}
 
+	// We've applied Two-Opt to our best path, now let's subject our path to a third optimizing algorithm. This time, we broaden our horizons from Two-Opt by not simply considering two sets of adjacent edges, but instead three edges where two are adjacent to each other and 1 is not. 
 	void twoHalfOpt()
 	{
 		bool changed;
@@ -337,19 +346,21 @@ public:
 	}
 
 
-	double eval(candidate C) {
+	double eval(possibleSolution C) 
+	{
 		return data.evaluate(C);
 	}
 
 };
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) 
+{
 	inputFile.open(argv[1]);
 	string firstPart(argv[1]);	
 	outputFileName = firstPart + ".AlexHoffer.tour";	
 	time_t sysTime;
 	srand(time(&sysTime));
-	SimulatedAnnealing SA;
-	SA.run();
+	TravelingFrankenstein Shelley;
+	Shelley.SimulatedAnnealing();
 	return 0;
 }
