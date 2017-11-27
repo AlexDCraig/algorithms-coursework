@@ -6,6 +6,9 @@
 #include <string.h>
 #include <ctime>
 #include <cmath>
+#include <time.h>
+#include <stdlib.h>
+#include <iomanip>
 #include <sstream>
 #include <iostream>
 #include <fstream>
@@ -15,6 +18,7 @@ typedef vector<int> possibleSolution;
 ifstream inputFile;
 ofstream outputFile;
 string outputFileName;
+string testOutputName;
 
 class cityInformation 
 {
@@ -355,12 +359,25 @@ public:
 
 int main(int argc, char* argv[]) 
 {
+	ofstream testOutput;
+	clock_t t;
+	t = clock();
+	srand(time(NULL));
+	
 	inputFile.open(argv[1]);
 	string firstPart(argv[1]);	
-	outputFileName = firstPart + ".AlexHoffer.tour";	
-	time_t sysTime;
-	srand(time(&sysTime));
+	outputFileName = firstPart + ".tour";	
+
 	TravelingFrankenstein Shelley;
 	Shelley.SimulatedAnnealing();
+
+	testOutputName = firstPart + ".time";
+	testOutput.open(testOutputName.c_str());
+
+	t = clock() - t;
+	float convtime = ((float)t)/(CLOCKS_PER_SEC);
+	testOutput << convtime;
+	testOutput.close();
+
 	return 0;
 }
